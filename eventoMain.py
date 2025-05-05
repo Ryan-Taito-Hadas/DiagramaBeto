@@ -1,0 +1,337 @@
+from abc import ABC, abstractmethod
+from datetime import datetime
+from functools import wraps
+from typing import List, Optional
+
+#___________________________________________________________________________________________________________________________
+class EntidadeBase(ABC):
+    pass
+
+#___________________________________________________________________________________________________________________________
+class IEventoGerenciavel(ABC):
+    
+    @abstractmethod
+    def publicar_evento(self, evento: "EventoBase") -> None:
+        pass
+
+    @abstractmethod
+    def editar_evento(self, evento: "EventoBase") -> None:
+        pass
+
+    @abstractmethod
+    def excluir_evento(self, evento: "EventoBase") -> None:
+        pass
+
+    @abstractmethod
+    def listar_eventos(self) -> List['EventoBase']:
+        pass
+ 
+#___________________________________________________________________________________________________________________________
+
+class ILogin(ABC):  
+    @abstractmethod
+    def login(self, senha: str) -> bool:
+        pass
+
+    @abstractmethod
+    def esta_autenticado(self) -> bool:
+        pass
+#___________________________________________________________________________________________________________________________
+class PessoaBase(ILogin):
+    def __init__(self, id: str, nome: str, email: str, cpf: str, dataNasc: str, senha: str):
+        """ Construtor da classe Pessoa.  """
+        
+        self._nome = nome
+        self._id = id
+        self._email = email
+        self._cpf = cpf
+        self._dataNasc = dataNasc
+        self._senha = senha
+        self._autenticado = False
+        self.__eventos_inscritos: List[EventoBase] = []
+        
+    def login(self, senha: str) -> bool:
+        if senha == self._senha:
+            self._autenticado = True
+            print(f"[LOGIN] {self._nome} autenticado com sucesso.")
+            return True
+        print("[ERRO] Senha incorreta.")
+        return False      
+    
+    def esta_autenticado(self) -> bool:
+        return self._autenticado
+
+    @property
+    def nome(self):
+        return self._nome
+
+    @nome.setter
+    def nome(self, value):
+        self._nome = value
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    @property
+    def email(self):
+        return self._email
+
+    @email.setter
+    def email(self, value):
+        self._email = value
+
+    @property
+    def cpf(self):
+        return self._cpf
+
+    @cpf.setter
+    def cpf(self, value):
+        self._cpf = value
+
+    @property
+    def dataNasc(self):
+        return self._dataNasc
+
+    @dataNasc.setter
+    def dataNasc(self, value):
+        self._dataNasc = value
+
+    @abstractmethod
+    def interagir(self) -> None:
+        pass
+
+#___________________________________________________________________________________________________________________________
+
+class Produtor(PessoaBase, IEventoGerenciavel):
+    def __init__(self, nome: str, id_: str, email: str, cpf: str, data_nasc: str, descricao: str):
+        super().__init__(nome, id_, email, cpf, data_nasc)
+        self.__descricao = descricao
+        self.__eventos_criados: List["EventoBase"] = []
+
+    def publicar_evento(self, evento: "EventoBase") -> None:
+        self.__eventos_criados.append(evento)
+        print(f"Evento '{evento.titulo}' publicado com sucesso.")
+
+    def editar_evento(self, evento: "EventoBase") -> None:
+        for idx, e in enumerate(self.__eventos_criados):
+            if e == evento:
+                #substituir por um novo objeto ou atualizar campos
+                print(f"Evento '{e.titulo}' editado.")
+                return
+        print("Evento não encontrado.")
+
+    def excluir_evento(self, evento: "EventoBase") -> None:
+        if evento in self.__eventos_criados:
+            self.__eventos_criados.remove(evento)
+            print(f"Evento '{evento.titulo}' removido com sucesso.")
+        else:
+            print("Evento não encontrado.")
+
+    def listar_eventos(self) -> List[str]:
+        return [f"{idx + 1}. {evento.titulo}" for idx, evento in enumerate(self.__eventos_criados)]
+
+
+    def login(self, senha: str) -> bool:
+        if senha == self._senha:
+            print(f"Login realizado com sucesso para {self._nome}")
+            return True
+        print("Senha incorreta.")
+        return False
+
+    def interagir(self) -> None:
+        pass
+
+#___________________________________________________________________________________________________________________________
+class Participante(PessoaBase):
+    def __init__(self, nome: str, id_: str, email: str, cpf: str, data_nasc: str):
+        super().__init__(nome, id_, email, cpf, data_nasc)
+        self.__ingressos_comprados = ingressos_comprados if ingressos_comprados is not None else [] #ser uma lista vazia apenas dificulta usar esse atributo em outra classe
+        self.__preferencias = []                                                                    #desse jeito caso não tenha nada vai ser uma [] mas ainda sendo um "ingressos_comprados"
+        self.__avaliacoes_realizadas = {}
+
+    def comprar_ingresso(self, ingresso):
+        self.__ingressos_comprados.append(ingresso)
+
+    def avaliar_evento(self, evento: EventoBase, nota: float):
+        self.__avaliacoes_realizadas[evento] = nota
+
+    def registrar_transacao(self, transacao):
+        self.__transacoes.append(transacao)
+
+    def comentar_evento(self, evento: EventoBase, texto: str):
+        pass
+
+    def login(self, senha: str) -> bool:
+        return True
+
+    def interagir(self) -> None:
+        pass
+
+#___________________________________________________________________________________________________________________________
+class VendedorIngresso(PessoaBase):
+    pass
+
+#___________________________________________________________________________________________________________________________
+class EventoBase(ABC):
+    def __init__(self, id: str, titulo: str, data: datetime, local: str, capacidade: int):
+        self._id = id
+        self._titulo = titulo
+        self._data = data
+        self._local = local
+        self._capacidade = capacidade #A capacidade vai (eu imagino) de alguma forma alterar o ingresso, como seria? lançar um if em algum lugar ai
+        self._avaliacoes: List[Avaliacao] = []
+        self._comentarios: List[Comentario] = []
+        self._interacao: Optional[Interacao] = None
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    @property
+    def titulo(self):
+        return self._titulo
+
+    @titulo.setter
+    def titulo(self, value):
+        self._titulo = value
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def local(self):
+        return self._local
+
+    @local.setter
+    def local(self, value):
+        self._local = value
+
+    @property
+    def capacidade(self):
+        return self._capacidade
+
+    @capacidade.setter
+    def capacidade(self, value):
+        self._capacidade = value
+
+    @abstractmethod
+    def exibir_detalhes(self):
+        pass
+
+    def avaliar(self, nota: float, autor: 'Pessoa'):        #é >ESSENCIAL< deixar marcado tbm qual evento que ta sendo avaliado
+        self._avaliacoes.append(Avaliacao(nota, autor))
+
+    def adicionar_comentario(self, texto: str, autor: 'Pessoa'):
+        self._comentarios.append(Comentario(texto, autor, datetime.now()))
+
+    def ativar_interacao(self):
+        self._interacao = Interacao()
+
+    def enviar_chat(self, autor: 'Pessoa', mensagem: str):
+        if not self.interacao:
+            raise Exception("Este evento não possui interatividade ao vivo.")
+        self.interacao.enviar_mensagem(autor, mensagem)
+
+#___________________________________________________________________________________________________________________________
+class EventoOnline(EventoBase):
+    pass
+
+#___________________________________________________________________________________________________________________________
+class EventoPresencial(EventoBase):
+    pass
+
+#___________________________________________________________________________________________________________________________ 
+class Ingresso:
+    def __init__(self, preco: float, evento: EventoBase):
+        self._preco = preco
+        self._evento = evento
+    
+    @property
+    def preco(self):
+        return self._preco
+
+    @preco.setter
+    def preco(self, value):
+        self._preco = value
+
+    @property
+    def evento(self):
+        return self._evento
+
+    @evento.setter
+    def evento(self, value):
+        self._evento = value
+    
+#___________________________________________________________________________________________________________________________
+class Interacao:
+    pass
+
+#___________________________________________________________________________________________________________________________
+class Avaliacao:
+    pass
+
+#___________________________________________________________________________________________________________________________
+class Comentario:
+    pass
+
+#___________________________________________________________________________________________________________________________        
+class Transacao:
+    def __init__(self, comprador: Participante, vendedor: VendedorIngresso, ingresso: Ingresso):
+        self._comprador = comprador
+        self._vendedor = vendedor
+        self._ingresso = ingresso
+        self._valor = ingresso.valor
+        self._data = datetime.now()
+    
+    @property
+    def comprador(self):
+        return self._comprador
+
+    @comprador.setter
+    def comprador(self, value):
+        self._comprador = value
+
+    @property
+    def vendedor(self):
+        return self._vendedor
+
+    @vendedor.setter
+    def vendedor(self, value):
+        self._vendedor = value
+
+    @property
+    def ingresso(self):
+        return self._ingresso
+
+    @ingresso.setter
+    def ingresso(self, value):
+        self._ingresso = value
+
+    @property
+    def valor(self):
+        return self._valor
+
+    @valor.setter
+    def valor(self, value):
+        self._valor = value
+
+
+    def registrar(self):
+        self.comprador.registrar_transacao(self)
+        return f"Transação registrada: {self.comprador.nome} comprou um ingresso para {self.ingresso} por R${self.valor:.2f} em {self._data}"
+
+
