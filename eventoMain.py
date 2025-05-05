@@ -2,10 +2,28 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from functools import wraps
 from typing import List, Optional
-
+from uuid import uuid4
 #___________________________________________________________________________________________________________________________
 class EntidadeBase(ABC):
-    pass
+    def __init__(self):
+        self._id = str(uuid4())
+        self._criado_em = datetime.now()
+        self._alterado_em = datetime.now()
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def criado_em(self):
+        return self._criado_em
+
+    @property
+    def alterado_em(self):
+        return self._alterado_em
+
+    def atualizar(self):
+        self._alterado_em = datetime.now()
 
 #___________________________________________________________________________________________________________________________
 class IEventoGerenciavel(ABC):
@@ -267,11 +285,20 @@ class EventoBase(ABC):
 
 #___________________________________________________________________________________________________________________________
 class EventoOnline(EventoBase):
-    pass
+    def __init__(self, id: str, titulo: str, data: datetime, local: str, capacidade: int, link_transmissao: str):
+        super().__init__(id, titulo, data, local, capacidade)
+        self.link_transmissao = link_transmissao
+
+    def exibir_detalhes(self):
+        print(f"[EVENTO ONLINE] {self.titulo} - Link: {self.link_transmissao}")
 
 #___________________________________________________________________________________________________________________________
 class EventoPresencial(EventoBase):
-    pass
+    def verificar_local(self):
+        print(f"Verificando local do evento: {self.local}")
+
+    def exibir_detalhes(self):
+        print(f"[EVENTO PRESENCIAL] {self.titulo} - Local: {self.local}")
 
 #___________________________________________________________________________________________________________________________ 
 class Ingresso:
@@ -297,15 +324,29 @@ class Ingresso:
     
 #___________________________________________________________________________________________________________________________
 class Interacao:
-    pass
+    def __init__(self):
+        self.mensagens = []
+
+    def enviar_mensagem(self, autor: PessoaBase, mensagem: str):
+        data_envio = datetime.now().strftime("%d/%m/%Y %H:%M")
+        self.mensagens.append((autor.nome, mensagem, data_envio))
+        print(f"[CHAT AO VIVO] {autor.nome} ({data_envio}): {mensagem}")
+        if not self._interacao:
+            raise Exception("Este evento não possui interatividade ao vivo.")
+        self._interacao.enviar_mensagem(autor, mensagem)
 
 #___________________________________________________________________________________________________________________________
 class Avaliacao:
-    pass
+    def __init__(self, nota: float, autor: PessoaBase):
+        self.nota = nota
+        self.autor = autor
 
 #___________________________________________________________________________________________________________________________
 class Comentario:
-    pass
+    def __init__(self, texto: str, autor: PessoaBase, data: datetime):
+        self.texto = texto
+        self.autor = autor
+        self.data = data
 
 #___________________________________________________________________________________________________________________________        
 class Transacao:
