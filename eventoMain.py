@@ -164,25 +164,25 @@ class Produtor(PessoaBase, IEventoGerenciavel):
 
 #___________________________________________________________________________________________________________________________
 class Participante(PessoaBase):
-    def __init__(self, nome: str, id_: str, email: str, cpf: str, data_nasc: str):
+    def __init__(self, nome: str, id_: str, email: str, cpf: str, data_nasc: str, ingressos_comprados: List):
         super().__init__(nome, id_, email, cpf, data_nasc)
-        self.__ingressos_comprados = ingressos_comprados if ingressos_comprados is not None else [] #ser uma lista vazia apenas dificulta usar esse atributo em outra classe
-        self.__preferencias = []                                                                    #desse jeito caso não tenha nada vai ser uma [] mas ainda sendo um "ingressos_comprados"
-        self.__avaliacoes_realizadas = {}
+        self._ingressos_comprados = ingressos_comprados if ingressos_comprados is not None else [] #ser uma lista vazia apenas dificulta usar esse atributo em outra classe
+        self._preferencias = []                                                                    #desse jeito caso não tenha nada vai ser uma [] mas ainda sendo um "ingressos_comprados"
+        self._avaliacoes_realizadas = {}
     
     @requer_login
     def comprar_ingresso(self, ingresso):
-        self.__ingressos_comprados.append(ingresso)
+        self._ingressos_comprados.append(ingresso)
 
     @requer_login
-    def avaliar_evento(self, evento: EventoBase, nota: float):
-        self.__avaliacoes_realizadas[evento] = nota
+    def avaliar_evento(self, evento: "EventoBase", nota: float):
+        self._avaliacoes_realizadas[evento] = nota
 
     def registrar_transacao(self, transacao):
-        self.__transacoes.append(transacao)
+        self._transacoes.append(transacao)
         
     @requer_login
-    def comentar_evento(self, evento: EventoBase, texto: str):
+    def comentar_evento(self, evento: "EventoBase", texto: str):
         pass
 
     def login(self, senha: str) -> bool:
@@ -251,16 +251,22 @@ class EventoBase(ABC):
     def exibir_detalhes(self):
         pass
 
-    def avaliar(self, nota: float, autor: 'Pessoa'):        #é >ESSENCIAL< deixar marcado tbm qual evento que ta sendo avaliado
+    def comprar_ingresso(self, participante):
+        if self._ingressos_vendidos < self._capacidade:
+            self._ingressos_vendidos += 1
+            return True
+        return False
+
+    def avaliar(self, nota: float, autor: PessoaBase):        #é >ESSENCIAL< deixar marcado tbm qual evento que ta sendo avaliado
         self._avaliacoes.append(Avaliacao(nota, autor))
 
-    def adicionar_comentario(self, texto: str, autor: 'Pessoa'):
+    def adicionar_comentario(self, texto: str, autor: PessoaBase):
         self._comentarios.append(Comentario(texto, autor, datetime.now()))
 
     def ativar_interacao(self):
         self._interacao = Interacao()
 
-    def enviar_chat(self, autor: 'Pessoa', mensagem: str):
+    def enviar_chat(self, autor: PessoaBase, mensagem: str):
         if not self.interacao:
             raise Exception("Este evento não possui interatividade ao vivo.")
         self.interacao.enviar_mensagem(autor, mensagem)
@@ -313,7 +319,7 @@ class Transacao:
         self._comprador = comprador
         self._vendedor = vendedor
         self._ingresso = ingresso
-        self._valor = ingresso.valor
+        self._valor = ingresso.preco
         self._data = datetime.now()
     
     @property
@@ -349,8 +355,11 @@ class Transacao:
         self._valor = value
 
 
+    def __str__(self):
+        return f"Ingresso para '{self.ingresso.evento.titulo}' comprado por {self.comprador} e vendido por {self.vendedor} no valor de - R${self.valor:.2f}"
+
     def registrar(self):
         self.comprador.registrar_transacao(self)
-        return f"Transação registrada: {self.comprador.nome} comprou um ingresso para {self.ingresso} por R${self.valor:.2f} em {self._data}"
+
 
 
