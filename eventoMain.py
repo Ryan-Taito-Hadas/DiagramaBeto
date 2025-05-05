@@ -26,8 +26,20 @@ class IEventoGerenciavel(ABC):
     def listar_eventos(self) -> List['EventoBase']:
         pass
  
-#___________________________________________________________________________________________________________________________
-
+#Login Method Decorator_____________________________________________________________________________________________________
+def requer_login(metodo):
+        @wraps(metodo)
+        def wrapper(self, *args, **kwargs):
+            if hasattr(self, 'esta_autenticado') and callable(self.esta_autenticado):
+                if not self.esta_autenticado():
+                    print("⚠️ Acesso negado: login necessário.")
+                    return
+            else:
+                raise AttributeError("Classe não possui método 'esta_autenticado'")
+            return metodo(self, *args, **kwargs)
+        return wrapper
+    
+#Login Interface____________________________________________________________________________________________________________
 class ILogin(ABC):  
     @abstractmethod
     def login(self, senha: str) -> bool:
@@ -36,6 +48,7 @@ class ILogin(ABC):
     @abstractmethod
     def esta_autenticado(self) -> bool:
         pass
+    
 #___________________________________________________________________________________________________________________________
 class PessoaBase(ILogin):
     def __init__(self, id: str, nome: str, email: str, cpf: str, dataNasc: str, senha: str):
@@ -112,11 +125,13 @@ class Produtor(PessoaBase, IEventoGerenciavel):
         super().__init__(nome, id_, email, cpf, data_nasc)
         self.__descricao = descricao
         self.__eventos_criados: List["EventoBase"] = []
-
+    
+    @requer_login
     def publicar_evento(self, evento: "EventoBase") -> None:
         self.__eventos_criados.append(evento)
         print(f"Evento '{evento.titulo}' publicado com sucesso.")
 
+    @requer_login
     def editar_evento(self, evento: "EventoBase") -> None:
         for idx, e in enumerate(self.__eventos_criados):
             if e == evento:
@@ -125,6 +140,7 @@ class Produtor(PessoaBase, IEventoGerenciavel):
                 return
         print("Evento não encontrado.")
 
+    @requer_login
     def excluir_evento(self, evento: "EventoBase") -> None:
         if evento in self.__eventos_criados:
             self.__eventos_criados.remove(evento)
@@ -153,16 +169,19 @@ class Participante(PessoaBase):
         self.__ingressos_comprados = ingressos_comprados if ingressos_comprados is not None else [] #ser uma lista vazia apenas dificulta usar esse atributo em outra classe
         self.__preferencias = []                                                                    #desse jeito caso não tenha nada vai ser uma [] mas ainda sendo um "ingressos_comprados"
         self.__avaliacoes_realizadas = {}
-
+    
+    @requer_login
     def comprar_ingresso(self, ingresso):
         self.__ingressos_comprados.append(ingresso)
 
+    @requer_login
     def avaliar_evento(self, evento: EventoBase, nota: float):
         self.__avaliacoes_realizadas[evento] = nota
 
     def registrar_transacao(self, transacao):
         self.__transacoes.append(transacao)
-
+        
+    @requer_login
     def comentar_evento(self, evento: EventoBase, texto: str):
         pass
 
