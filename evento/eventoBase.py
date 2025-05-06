@@ -3,7 +3,7 @@ from datetime import datetime
 from evento.eventoInteracoes.avaliacao import Avaliacao
 from evento.eventoInteracoes.interacao import Interacao
 from evento.eventoInteracoes.comentario import Comentario
-from pessoa.pessoaBase import PessoaBase
+from pessoa.pessoaBase import Produtor
 from functools import wraps
 from typing import List, Optional
 from uuid import uuid4
@@ -30,7 +30,6 @@ class IEventoGerenciavel(ABC):
 
 
 
-
 #___________________________________________________________________________________________________________________________
 class EventoBase(ABC):
     def __init__(self, id: str, titulo: str, data: datetime, local: str, capacidade: int):
@@ -38,11 +37,14 @@ class EventoBase(ABC):
         self._titulo = titulo
         self._data = data
         self._local = local
-        self._capacidade = capacidade #A capacidade vai (eu imagino) de alguma forma alterar o ingresso, como seria? lançar um if em algum lugar ai
+        self._capacidade = capacidade # Limite de participantes
+        self._produtor = Produtor()
+        self._participantes = [] # Lista de participantes que relaciona com comentário, interacao, avaliacao, capacidade e etc...
         self._avaliacoes = Avaliacao()
         self._comentarios = Comentario()
-        self._interacao = Interacao()
-
+        self._interacao = Interacao() 
+        self._ingressos_vendidos = 0
+        self._link_transmissao = None
     @property
     def id(self):
         return self._id
@@ -93,11 +95,14 @@ class EventoBase(ABC):
             return True
         return False
 
-    def avaliar(self,nota: float, autor: PessoaBase):       
+    def avaliar(self,nota: float, autor):       
         self._avaliacoes.append(Avaliacao(nota, autor))
 
-    def adicionar_comentario(self, texto: str, autor: PessoaBase):
-        self._comentarios.append(Comentario(texto, autor, datetime.now()))
+    def adicionar_comentario(self, texto: str, autor):
+        if autor not in self._participantes:
+            raise PermissionError("Somente participantes do evento podem comentar.")
+        
+        self._comentarios.append(Comentario(texto, autor, datetime.now()))   
 
     def ativar_interacao(self):
         self._interacao = Interacao()

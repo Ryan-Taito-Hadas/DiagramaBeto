@@ -2,31 +2,14 @@ from abc import ABC
 from datetime import datetime
 from uuid import uuid4
 from typing import List, Optional
+from entidadeBase.entidadeBase import EntidadeBase
 from evento.eventoBase import EventoBase
 from pessoa.pessoaBase import PessoaBase
 from evento.eventoInteracoes.avaliacao import Avaliacao
 from evento.eventoInteracoes.interacao import Interacao
 from evento.eventoInteracoes.comentario import Comentario
 
+p = PessoaBase(cpf='', nome='NICOLAS WOLF', email='', senha='111111', dataNasc=datetime.now(), id=str(uuid4()))
+print(p.nome)
 
-#___________________________________________________________________________________________________________________________
-class EntidadeBase(ABC):
-    def __init__(self):
-        self._id = str(uuid4())
-        self._criado_em = datetime.now()
-        self._alterado_em = datetime.now()
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def criado_em(self):
-        return self._criado_em
-
-    @property
-    def alterado_em(self):
-        return self._alterado_em
-
-    def atualizar(self):
-        self._alterado_em = datetime.now()
+p.login('111111')

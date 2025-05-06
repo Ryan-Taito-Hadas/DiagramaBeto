@@ -1,4 +1,3 @@
-from pessoa.pessoaBase import PessoaBase
 from datetime import datetime
 from typing import List, Optional
 
@@ -7,7 +6,7 @@ class Interacao:
     def __init__(self):
         self.mensagens = []
 
-    def enviar_mensagem(self, autor: PessoaBase, mensagem: str):
+    def enviar_mensagem(self, autor, mensagem: str):
         data_envio = datetime.now().strftime("%d/%m/%Y %H:%M")
         self.mensagens.append((autor.nome, mensagem, data_envio))
         print(f"[CHAT AO VIVO] {autor.nome} ({data_envio}): {mensagem}")

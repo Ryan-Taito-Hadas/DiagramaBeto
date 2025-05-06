@@ -11,6 +11,9 @@ class Transacao:
         self._ingresso = ingresso
         self._valor = ingresso.preco
         self._data = datetime.now()
+        
+    def __str__(self):
+        return f"Ingresso para '{self.ingresso.evento.titulo}' comprado por {self.comprador} e vendido por {self.vendedor} no valor de - R${self.valor:.2f}"
     
     @property
     def comprador(self):
