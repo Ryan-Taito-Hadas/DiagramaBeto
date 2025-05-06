@@ -1,4 +1,3 @@
-from evento.eventoBase import EventoBase
 from pessoa.pessoaBase import PessoaBase
 from datetime import datetime
 from typing import List, Optional

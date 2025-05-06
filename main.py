@@ -1,6 +1,13 @@
 from abc import ABC
 from datetime import datetime
 from uuid import uuid4
+from typing import List, Optional
+from evento.eventoBase import EventoBase
+from pessoa.pessoaBase import PessoaBase
+from evento.eventoInteracoes.avaliacao import Avaliacao
+from evento.eventoInteracoes.interacao import Interacao
+from evento.eventoInteracoes.comentario import Comentario
+
 
 #___________________________________________________________________________________________________________________________
 class EntidadeBase(ABC):

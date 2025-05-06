@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from functools import wraps
 from typing import List, Optional
-from evento.eventoBase import EventoBase 
+from evento.eventoBase import EventoBase
 from main import EntidadeBase
 
 
@@ -13,7 +13,7 @@ def requer_login(metodo):
         def wrapper(self, *args, **kwargs):
             if hasattr(self, 'esta_autenticado') and callable(self.esta_autenticado):
                 if not self.esta_autenticado():
-                    print("⚠️ Acesso negado: login necessário.")
+                    print("Acesso negado: login necessário.")
                     return
             else:
                 raise AttributeError("Classe não possui método 'esta_autenticado'")
@@ -30,9 +30,6 @@ class ILogin(ABC):
     @abstractmethod
     def esta_autenticado(self) -> bool:
         pass
-
-
-
 
 
 
@@ -141,17 +138,7 @@ class Produtor(PessoaBase):
             print("Evento não encontrado.")
 
     def listar_eventos(self) -> List[str]:
-        return [f"{idx + 1}. {evento.titulo}" for idx, evento in enumerate(self.__eventos_criados)]
-
-
-    def login(self, senha: str) -> bool:
-        if senha == self._senha:
-            print(f"Login realizado com sucesso para {self._nome}")
-            return True
-        print("Senha incorreta.")
-        return False
-    
-    
+        return [f"{idx + 1}. {evento.titulo}" for idx, evento in enumerate(self.__eventos_criados)]   
     
     
     
@@ -180,6 +167,7 @@ class Participante(PessoaBase):
 
     def login(self, senha: str) -> bool:
         return True
+
 
 #___________________________________________________________________________________________________________________________
 class VendedorIngresso(PessoaBase):
