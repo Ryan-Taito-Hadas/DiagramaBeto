@@ -1,4 +1,4 @@
-from pessoa.pessoaBase import PessoaBase
+from pessoa.pessoa import PessoaBase
 from decorators.loginAuth import requer_login
 from typing import List
 

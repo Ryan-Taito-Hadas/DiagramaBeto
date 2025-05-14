@@ -1,4 +1,4 @@
-from pessoa.pessoaBase import PessoaBase 
+from pessoa.pessoa import PessoaBase 
 
 #___________________________________________________________________________________________________________________________
 class VendedorIngresso(PessoaBase):

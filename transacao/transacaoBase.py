@@ -1,6 +1,6 @@
 from evento.eventoBase import EventoBase
 from ingresso.ingressoBase import Ingresso
-from pessoa.pessoaBase import Participante, VendedorIngresso
+from pessoa.pessoa import Participante, VendedorIngresso
 import datetime
 
 #___________________________________________________________________________________________________________________________        

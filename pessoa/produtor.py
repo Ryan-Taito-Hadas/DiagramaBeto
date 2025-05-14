@@ -1,4 +1,4 @@
-from pessoa.pessoaBase import PessoaBase
+from pessoa.pessoa import PessoaBase
 from typing import List
 from decorators.loginAuth import requer_login
 #Sub Class Produtor_________________________________________________________________________________________________________
