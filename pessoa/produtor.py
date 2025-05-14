@@ -1,6 +1,6 @@
 from pessoa.pessoaBase import PessoaBase
 from typing import List
-from decorators.requerLogin import requer_login
+from decorators.loginAuth import requer_login
 #Sub Class Produtor_________________________________________________________________________________________________________
 
 class Produtor(PessoaBase):

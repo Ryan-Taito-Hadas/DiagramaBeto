@@ -1,12 +1,12 @@
+from login import loginAuth
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import List, Optional
-from entidadeBase.entidadeBase import EntidadeBase
-from interfaces.iLogin import ILogin
-from decorators.requerLogin import requer_login
+
+
 
 # ABC CLASS PessoaBase______________________________________________________________________________________________________
-class PessoaBase(EntidadeBase, ILogin):
+class PessoaBase(EntidadeBase):
     def __init__(self, id: str, nome: str, email: str, cpf: str, dataNasc: str, senha: str):
         """ Construtor da classe Pessoa.  """
         

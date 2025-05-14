@@ -1,5 +1,5 @@
 from pessoa.pessoaBase import PessoaBase
-from decorators.requerLogin import requer_login
+from decorators.loginAuth import requer_login
 from typing import List
 
 #___________________________________________________________________________________________________________________________
