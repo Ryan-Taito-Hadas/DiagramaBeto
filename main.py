@@ -4,7 +4,7 @@ from uuid import uuid4
 from typing import List, Optional
 from entidadeBase.entidadeBase import EntidadeBase
 from evento.eventoBase import EventoBase
-from pessoa.pessoa import PessoaBase
+from pessoa.PessoaBase import PessoaBase
 from evento.eventoInteracoes.avaliacao import Avaliacao
 from evento.eventoInteracoes.interacao import Interacao
 from evento.eventoInteracoes.comentario import Comentario

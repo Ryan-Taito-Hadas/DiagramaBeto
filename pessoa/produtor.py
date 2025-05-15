@@ -1,6 +1,6 @@
-from pessoa.pessoa import PessoaBase
+from pessoa.PessoaBase import PessoaBase
 from typing import List
-from decorators.loginAuth import requer_login
+
 #Sub Class Produtor_________________________________________________________________________________________________________
 
 class Produtor(PessoaBase):
@@ -9,12 +9,10 @@ class Produtor(PessoaBase):
         self.__descricao = descricao
         self.__eventos_criados = []
     
-    @requer_login
     def publicar_evento(self, evento) -> None:
         self.__eventos_criados.append(evento)
         print(f"Evento '{evento.titulo}' publicado com sucesso.")
 
-    @requer_login
     def editar_evento(self, evento) -> None:
         for idx, e in enumerate(self.__eventos_criados):
             if e == evento:
@@ -23,7 +21,6 @@ class Produtor(PessoaBase):
                 return
         print("Evento não encontrado.")
 
-    @requer_login
     def excluir_evento(self, evento) -> None:
         if evento in self.__eventos_criados:
             self.__eventos_criados.remove(evento)
