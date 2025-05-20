@@ -347,7 +347,11 @@ class MenuParticipante:
         participante.comprar_ingresso(ingresso)
         self.ingressos.append(ingresso)
         vendedor.vender_ingresso(ingresso)
+        clearScreen()
         print("[Sucesso] Ingresso comprado com sucesso.")
+        
+        transacao_confirmada = Transacao(data_transacao, "Compra", valor, participante, ingresso)
+        transacoes.append(transacao_confirmada)
 
     def avaliar_evento(self):
         ''' Permite ao participante avaliar um evento. '''
