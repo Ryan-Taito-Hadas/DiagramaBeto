@@ -723,6 +723,105 @@ class MenuAdmin:
             except ValueError:
                 print("Entrada inválida! Por favor, digite um número.")
 
+class MenuEvento:
+    def __init__(self, eventos, avaliacoes):
+        self.eventos = eventos
+        self.avaliacoes = avaliacoes
+
+    def exibir_menu(self):
+        ''' Exibe o menu de eventos e processa as opções escolhidas. '''
+        while True:
+            print("\n===== Menu de Eventos =====")
+            print("1 - Listar Todos os Eventos")
+            print("2 - Ver Detalhes de um Evento")
+            print("3 - Ver Avaliações de um Evento")
+            print("0 - Voltar ao Menu Principal")
+
+            try:
+                opcao = input("Escolha uma opção: ").strip()
+
+                match opcao:
+                    case "1":
+                        self.listar_eventos()
+                    case "2":
+                        self.detalhes_evento()
+                    case "3":
+                        self.ver_avaliacoes_evento()
+                    case "0":
+                        print("Voltando ao menu principal...")
+                        break
+                    case _:
+                        print("Opção inválida. Por favor, tente novamente.")
+            except ValueError:
+                print("Entrada inválida! Por favor, digite um número.")
+
+    def listar_eventos(self):
+        ''' Lista todos os eventos cadastrados no sistema. '''
+        print("\n=== Lista de Eventos Disponíveis ===")
+        if not self.eventos:
+            print("[Aviso] Nenhum evento cadastrado.")
+            return
+        
+        for i, e in enumerate(self.eventos):
+            print(f"{i} - {e.titulo} | Tipo: {e.tipo} | Data: {e.data} | Local: {e.local}")
+
+    def detalhes_evento(self):
+        ''' Mostra todos os detalhes de um evento específico. '''
+        self.listar_eventos()
+        if not self.eventos:
+            return
+
+        try:
+            idx = int(input("\nEscolha o número do evento para ver detalhes: "))
+            evento = self.eventos[idx]
+            
+            print(f"\n=== DETALHES DO EVENTO ===")
+            print(f"Título: {evento.titulo}")
+            print(f"ID: {evento._id}")
+            print(f"Tipo: {evento.tipo}")
+            print(f"Data: {evento.data}")
+            print(f"Local: {evento.local}")
+            print(f"Valor do ingresso: R$ {evento.valor_ingresso:.2f}")
+            print(f"Capacidade total: {evento.capacidade}")
+            print(f"Ingressos vendidos: {len(evento._ingressos)}")
+            print(f"Vagas restantes: {evento.capacidade - len(evento._ingressos)}")
+
+        except (IndexError, ValueError):
+            print("[Erro] Índice de evento inválido.")
+
+    def ver_avaliacoes_evento(self):
+        ''' Mostra todas as avaliações de um evento específico. '''
+        self.listar_eventos()
+        if not self.eventos:
+            return
+
+        try:
+            idx = int(input("\nEscolha o número do evento para ver avaliações: "))
+            evento = self.eventos[idx]
+            
+            print(f"\n=== AVALIAÇÕES DO EVENTO: {evento.titulo} ===")
+            
+            avaliacoes_do_evento = [a for a in self.avaliacoes if a.evento == evento]
+            
+            if not avaliacoes_do_evento:
+                print("Este evento ainda não possui avaliações.")
+                return
+                
+            nota_total = sum(a.nota for a in avaliacoes_do_evento)
+            nota_media = nota_total / len(avaliacoes_do_evento)
+            
+            print(f"Nota média: {nota_media:.1f}/10 ({len(avaliacoes_do_evento)} avaliações)")
+            print("\n--- Comentários ---")
+            
+            for i, avaliacao in enumerate(avaliacoes_do_evento):
+                participante_nome = avaliacao.participante.nome if hasattr(avaliacao.participante, "nome") else "Anônimo"
+                print(f"{i+1}. Nota: {avaliacao.nota}/10 | Participante: {participante_nome}")
+                print(f"   \"{avaliacao.comentario}\"")
+                print()
+                
+        except (IndexError, ValueError):
+            print("[Erro] Índice de evento inválido.")
+
 def menu_principal():
         ''' Exibe o menu principal e processa as opções escolhidas. '''
         while True:
@@ -731,6 +830,7 @@ def menu_principal():
             print("2. Menu Produtor")
             print("3. Menu Vendedor")
             print("4. Menu Admin")
+            print("5. Menu Evento")
             print("0. Sair")
 
             try:
@@ -749,6 +849,9 @@ def menu_principal():
                         menu.exibir_menu()
                     case 4:
                         menu = MenuAdmin(participantes, produtores, vendedores)
+                        menu.exibir_menu()
+                    case 5: 
+                        menu = MenuEvento(eventos, avaliacoes)
                         menu.exibir_menu()
                     case 0:
                         endProgram()
