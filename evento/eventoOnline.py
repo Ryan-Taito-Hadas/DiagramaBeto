@@ -1,7 +1,4 @@
 from evento.eventoBase import EventoBase
-from evento.eventoInteracoes.avaliacao import Avaliacao
-from evento.eventoInteracoes.interacao import Interacao
-from evento.eventoInteracoes.comentario import Comentario
 from pessoa import Produtor
 from datetime import datetime
 
@@ -11,9 +8,8 @@ class EventoOnline(EventoBase):
         super().__init__(id, titulo, data, local, capacidade)
         self.link_transmissao = link_transmissao
         self._participantes = [] # Lista de participantes que relaciona com comentário, interacao, avaliacao, capacidade e etc...
-        self._avaliacoes = Avaliacao()
+        self._avaliacoes = avaliacoes = [] # Lista de avaliações do evento
         self._comentarios = Comentario()
-        self._interacao = Interacao() 
         self._ingressos_vendidos = 0
         self._produtor = Produtor()
         
@@ -34,9 +30,6 @@ class EventoOnline(EventoBase):
         if autor not in self._participantes:
             raise PermissionError("Somente participantes do evento podem comentar.")
         self._comentarios.append(Comentario(texto, autor, datetime.now()))   
-
-    def ativar_interacao(self):
-        self._interacao = Interacao()
 
     def enviar_chat(self, autor, mensagem):
         if not self.interacao:

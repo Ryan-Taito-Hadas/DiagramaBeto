@@ -1,7 +1,4 @@
 from evento.eventoBase import EventoBase
-from evento.eventoInteracoes.avaliacao import Avaliacao
-from evento.eventoInteracoes.interacao import Interacao
-from evento.eventoInteracoes.comentario import Comentario
 from pessoa import Produtor
 
 #___________________________________________________________________________________________________________________________
