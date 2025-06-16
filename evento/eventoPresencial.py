@@ -8,9 +8,6 @@ class EventoPresencial(EventoBase):
         self.endereco = endereco
         self._ingressos_vendidos = 0
         self._participantes = []
-        self._avaliacoes = Avaliacao()
-        self._comentarios = Comentario()
-        self._interacao = Interacao() 
         self._ingressos_vendidos = 0
         self._produtor = Produtor()
         

@@ -9,7 +9,7 @@ class EventoOnline(EventoBase):
         self.link_transmissao = link_transmissao
         self._participantes = [] # Lista de participantes que relaciona com comentário, interacao, avaliacao, capacidade e etc...
         self._avaliacoes = avaliacoes = [] # Lista de avaliações do evento
-        self._comentarios = Comentario()
+        self._comentarios = []
         self._ingressos_vendidos = 0
         self._produtor = Produtor()
         
@@ -21,17 +21,4 @@ class EventoOnline(EventoBase):
                 f"Ingressos Vendidos: {self._ingressos_vendidos}\n"
                 f"Link de Transmissão: {self.link_transmissao}")
 
-    def avaliar(self, nota: float, autor):
-        if autor not in self._participantes:
-            raise PermissionError("Somente participantes do evento podem avaliar.")
-        self._avaliacoes.append(Avaliacao(nota, autor))
-
-    def adicionar_comentario(self, texto: str, autor):
-        if autor not in self._participantes:
-            raise PermissionError("Somente participantes do evento podem comentar.")
-        self._comentarios.append(Comentario(texto, autor, datetime.now()))   
-
-    def enviar_chat(self, autor, mensagem):
-        if not self.interacao:
-            raise Exception("Este evento não possui interatividade ao vivo.")
-        self._interacao.enviar_mensagem(autor, mensagem)
+    

@@ -1,15 +1,9 @@
 from abc import ABC, abstractmethod
 
-#Login Method_____________________________________________________________________________________________________
-
-def autenticar(ABC):
-    
-    """ Método de autenticação. """
+class Autenticar(ABC):
+    """ Interface para classes que implementam autenticação """
     
     @abstractmethod
     def autenticar(self, senha: str) -> bool:
-            pass
-        
-        
-        
-        
+        """Autentica um usuário com base na senha fornecida"""
+        pass

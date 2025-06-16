@@ -39,7 +39,7 @@ class Transacao:
     @ingresso.setter
     def ingresso(self, value):
         self._ingresso = value
-
+        
     @property
     def valor(self):
         return self._valor
