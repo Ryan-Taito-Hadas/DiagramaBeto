@@ -1,9 +1,9 @@
-from evento.eventoBase import EventoBase
+from evento.Evento import Evento
 from pessoa import Produtor
 from datetime import datetime
 
 #___________________________________________________________________________________________________________________________
-class EventoOnline(EventoBase):
+class EventoOnline(Evento):
     def __init__(self, id: str, titulo: str, data: datetime, local: str, capacidade: int, link_transmissao: str):
         super().__init__(id, titulo, data, local, capacidade)
         self.link_transmissao = link_transmissao

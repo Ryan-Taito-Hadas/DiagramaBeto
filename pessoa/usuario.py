@@ -1,4 +1,4 @@
-from pessoa.PessoaBase import PessoaBase
+from pessoa.Pessoa import PessoaBase
 from typing import List
 
 #___________________________________________________________________________________________________________________________

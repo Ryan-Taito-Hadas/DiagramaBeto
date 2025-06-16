@@ -1,9 +1,5 @@
-from evento.eventoBase import EventoBase
-from datetime import datetime
-
-#___________________________________________________________________________________________________________________________ 
 class Ingresso:
-    def __init__(self, preco: float, evento: EventoBase):
+    def __init__(self, preco: float, evento: evento):
         self._preco = preco
         self._evento = evento
         self._data_compra = None

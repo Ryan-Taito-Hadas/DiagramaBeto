@@ -1,8 +1,8 @@
-from evento.eventoBase import EventoBase
+from evento.Evento import Evento
 from pessoa import Produtor
 
 #___________________________________________________________________________________________________________________________
-class EventoPresencial(EventoBase):
+class EventoPresencial(Evento):
     def __init__(self, id: str, titulo: str, data: str, local: str, capacidade: int, endereco: str):
         super().__init__(id, titulo, data, local, capacidade)
         self.endereco = endereco

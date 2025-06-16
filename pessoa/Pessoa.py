@@ -5,8 +5,8 @@ from typing import List, Optional
 
 
 
-# ABC CLASS PessoaBase______________________________________________________________________________________________________
-class PessoaBase(autenticar):
+# ABC CLASS Pessoa______________________________________________________________________________________________________
+class Pesso(autenticar):
     def __init__(self, id: str, nome: str, email: str, cpf: str, dataNasc: str, senha: str):
         """ Construtor da classe Pessoa.  """
         

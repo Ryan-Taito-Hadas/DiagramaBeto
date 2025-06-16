@@ -1,6 +1,5 @@
-from pessoa.PessoaBase import PessoaBase 
+from pessoa.Pessoa import Pessoa
 
-#___________________________________________________________________________________________________________________________
-class VendedorIngresso(PessoaBase):
+class VendedorIngresso(Pessoa):
     def __init__(self, id, nome, email, cpf, dataNasc, senha):
         super().__init__(id, nome, email, cpf, dataNasc, senha)

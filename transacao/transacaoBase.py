@@ -1,6 +1,6 @@
-from evento.eventoBase import EventoBase
-from ingresso.ingressoBase import Ingresso
-from pessoa.PessoaBase import Participante, VendedorIngresso
+from evento.Evento import EventoBase
+from ingresso.Ingresso import Ingresso
+from pessoa.Pessoa import Participante, VendedorIngresso
 from datetime import datetime
 #___________________________________________________________________________________________________________________________        
 class Transacao:
